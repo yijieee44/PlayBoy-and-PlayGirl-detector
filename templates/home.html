@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Probability of this people being a playboy/playgirl:</h2>
+    <div class="row d-flex justify-content-center mt-100">
+        <div class="col-md-6">
+            {% if percent<=50 %}
+            <div class="progress pink"> <span class="progress-left"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
+                <div class="progress-value">{{ percent }}%</div>
+            </div>
+            {% else %}
+            <div class="progress blue"> <span class="progress-left"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
+                <div class="progress-value">{{ percent }}%</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
