@@ -8,3 +8,4 @@ Werkzeug==1.0.1
 wincertstore==0.2
 requests==2.25.1
 dialogflow==1.1.0
+betterproto==1.2.5
