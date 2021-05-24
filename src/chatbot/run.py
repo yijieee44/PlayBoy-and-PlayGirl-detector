@@ -1,9 +1,10 @@
 import tinder_api_sms
 import time
+from src import chatbot
 
 
 compiled_messages = {}
-latest_message = {}
+chatbot_1 = chatbot.Chatbot()
 
 
 def process_messages(messages_all, my_id):
@@ -15,49 +16,57 @@ def process_messages(messages_all, my_id):
     ids = a list of the matched individuals' id "_id"
     match_ids = a list of the matched individuals' match_id "match_id"
     """
-    processed_messages = []
-    ids = []
+    processed_messages = {}
     match_ids = []
     for messages in messages_all:
         individual_messages = ""
         if messages:
             first = messages[0]
-            ids.append(first["_id"])
             match_ids.append(first["match_id"])
             for message in messages:
                 if message['from'] != my_id:
                     individual_messages += str(message['message'])
-            processed_messages.append(individual_messages)
-    return processed_messages, ids, match_ids
+            processed_messages[first["match_id"]] = individual_messages
+    return processed_messages, match_ids
 
 
-def check_duplicate(proc, ids):
+def check_duplicate(proc, match_id):
     global compiled_messages
     if not compiled_messages:
-        for index in range(len(proc)):
-            compiled_messages[ids[index]] = proc[index]
+        compiled_messages = proc
 
     for i in range(len(proc)):
-        if ids[i] in compiled_messages:
-            compiled = compiled_messages[ids[i]]
-            if proc[i] != "":
-                if proc[i] not in compiled:
-                    compiled = compiled + " " + proc[i]
-                    compiled_messages[ids[i]] = compiled
+        if match_id[i] in compiled_messages:
+            compiled = compiled_messages[match_id[i]]
+            if proc[match_id[i]] != "":
+                if proc[match_id[i]] not in compiled:
+                    compiled = compiled + " " + proc[match_id[i]]
+                    compiled_messages[match_id[i]] = compiled
         else:
-            compiled_messages[ids[i]] = proc[i]
+            compiled_messages[match_id[i]] = proc[match_id[i]]
 
 
-def get_message_every_1_sec(my_id, matches_info):
-    global latest_message
+def send_message(response):
+    sent = []
+    for each in response:
+        if response[each] != '':
+            sent.append(tinder_api_sms.send_msg(each, response[each]))
+
+    return sent
+
+
+def get_message_every_1_sec(my_id):
     while True:
         try:
+            matches = tinder_api_sms.all_matches()
+            matches_info = matches.get('data').get('matches')
             messages_all = []
             for match in matches_info:
                 messages_all.append(match.get('messages'))
-            proc, ids, match_ids = process_messages(messages_all, my_id)
-            latest_message = proc
-            check_duplicate(proc, ids)
+            proc, match_ids = process_messages(messages_all, my_id)
+            response = chatbot_1.get_responses(proc)
+            send_message(response)
+            check_duplicate(proc, match_ids)
             time.sleep(1)
         except:
             print("Error getting message...maybe token expired")
@@ -66,6 +75,4 @@ def get_message_every_1_sec(my_id, matches_info):
 
 if __name__ == "__main__":
     my_id = tinder_api_sms.get_self().get("_id")
-    matches = tinder_api_sms.all_matches()
-    matches_info = matches.get('data').get('matches')
-    get_message_every_1_sec(my_id, matches_info)
+    get_message_every_1_sec(my_id)
