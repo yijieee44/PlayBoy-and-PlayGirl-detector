@@ -1,9 +1,9 @@
 import tinder_api_sms
 import time
+import os
 from src import chatbot
 
 
-compiled_messages = {}
 chatbot_1 = chatbot.Chatbot()
 
 
@@ -31,19 +31,23 @@ def process_messages(messages_all, my_id):
 
 
 def check_duplicate(proc, match_id):
-    global compiled_messages
-    if not compiled_messages:
-        compiled_messages = proc
-
-    for i in range(len(proc)):
-        if match_id[i] in compiled_messages:
-            compiled = compiled_messages[match_id[i]]
-            if proc[match_id[i]] != "":
-                if proc[match_id[i]] not in compiled:
-                    compiled = compiled + " " + proc[match_id[i]]
-                    compiled_messages[match_id[i]] = compiled
-        else:
-            compiled_messages[match_id[i]] = proc[match_id[i]]
+    for id in match_id:
+        try:
+            message = proc[id]
+            ospath = os.getcwd()
+            ospath = ospath.replace("\\", "/")
+            ospath = ospath.split("/chatbot")[0]
+            filename = ospath + "/replies/" + id + ".txt"
+            file = open(filename, "r")
+            if message not in file:
+                file.close()
+                file = open(filename, "a")
+                file.write(message)
+                file.close()
+        except FileNotFoundError:
+            file = open(filename, "a+")
+            file.write(message)
+            file.close()
 
 
 def send_message(response):
@@ -64,8 +68,11 @@ def get_message_every_1_sec(my_id):
             for match in matches_info:
                 messages_all.append(match.get('messages'))
             proc, match_ids = process_messages(messages_all, my_id)
+            print(proc)
             response = chatbot_1.get_responses(proc)
-            send_message(response)
+            print(response)
+            sent = send_message(response)
+            print(sent)
             check_duplicate(proc, match_ids)
             time.sleep(1)
         except:
@@ -74,5 +81,7 @@ def get_message_every_1_sec(my_id):
 
 
 if __name__ == "__main__":
+    # remember to run sms_auth_v3 before running this
     my_id = tinder_api_sms.get_self().get("_id")
     get_message_every_1_sec(my_id)
+
