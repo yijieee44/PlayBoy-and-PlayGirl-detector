@@ -6,3 +6,8 @@ Jinja2==2.11.3
 MarkupSafe==1.1.1
 Werkzeug==1.0.1
 wincertstore==0.2
+requests==2.25.1
+dialogflow==1.1.0
+betterproto==1.2.5
+nltk==3.6.2
+sklearn==0.0

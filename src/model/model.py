@@ -1,9 +1,16 @@
 import pickle
+import warnings
+import os
+
+
 from src.utils.short_form import SHORT_FORM
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
-import warnings
+
 warnings.filterwarnings("ignore")
+
+# import nltk
+# nltk.download()  # uncomment these two lines to download nltk data
 
 
 def preprocess(content):
@@ -32,7 +39,16 @@ def predict(text):
 
 
 def main():
-    print(predict("can we have a meeting later?"))
+    ospath = os.getcwd().replace("\\", "/").split("model")[0] + "replies"
+    for txtfile in os.listdir(ospath):
+        if not txtfile.startswith("SAMPLE"):  # if want to see prediction on sample txt file, remove the negation "not"
+            directory = os.path.join(ospath, txtfile)
+            file = open(directory, "r")
+            compiledmessages = file.read().replace("\n", " ")
+            print(compiledmessages)
+            file.close()
+            print(predict(compiledmessages))
+    # print(predict("can we have a meeting later?"))
 
 
 if __name__ == "__main__":
