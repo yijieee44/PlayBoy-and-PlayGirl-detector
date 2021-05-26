@@ -1,9 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+    <h5 style="margin-top: 10px">People that you want to check: </h5>
+
+    <form action="{{ url_for('update') }}" method="post">
+        <select name=selected_people>
+            {% for p in people %}
+                {% if p == selected %}
+                <option value= "{{p}}" selected="selected">{{p}}</option>"
+                {% else %}
+                <option value= "{{p}}">{{p}}</option>"
+                {% endif %}
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="check">Check</button>
+    </form>
+
+    <hr class="dash">
+
     <h2>Probability of this people being a playboy/playgirl:</h2>
     <div class="row d-flex justify-content-center mt-100">
-        <div class="col-md-6">
+        <div class="col-md-6" >
             {% if percent<=50 %}
             <div class="progress pink"> <span class="progress-left"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
                 <div class="progress-value">{{ percent }}%</div>
@@ -15,4 +34,9 @@
             {% endif %}
         </div>
     </div>
+
+    <hr class="dash">
+
+    <h5>Messages he sent: </h5>
+    <p>{{ messages }}</p>
 {% endblock %}

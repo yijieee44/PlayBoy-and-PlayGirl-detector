@@ -1,7 +1,7 @@
 # coding=utf-8
 import json
 
-import config
+from src.chatbot import config
 import requests
 
 headers = {

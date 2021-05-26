@@ -9,7 +9,7 @@ class Chatbot:
         self.DIALOGFLOW_PROJECT_ID = 'ml-project-cwly'
         self.DIALOGFLOW_LANGUAGE_CODE = 'en-US'
         self.GOOGLE_APPLICATION_CREDENTIALS = 'credential.json'
-        self.credential_path = 'credential.json'
+        self.credential_path = 'src/cred/credential.json'
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = self.credential_path
 
     def get_response(self, tester_id, input_text):

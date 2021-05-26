@@ -103,3 +103,13 @@
 .progress.pink .progress-left .progress-bar {
     animation: none
 }
+
+hr.dash {
+  border-top: 3px dashed #bbb;
+  margin-top: 50px;
+}
+
+button.check {
+    margin-top:10px;
+    float:right;
+}

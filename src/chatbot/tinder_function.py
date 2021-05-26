@@ -1,6 +1,6 @@
-import tinder_api_sms
 import time
 import os
+from src.chatbot import tinder_api_sms
 from src import chatbot
 
 
@@ -78,10 +78,4 @@ def get_message_every_1_sec(my_id):
         except:
             print("Error getting message...maybe token expired")
             break
-
-
-if __name__ == "__main__":
-    # remember to run sms_auth_v3 before running this
-    my_id = tinder_api_sms.get_self().get("_id")
-    get_message_every_1_sec(my_id)
 
