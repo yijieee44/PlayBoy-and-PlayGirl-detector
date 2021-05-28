@@ -7,7 +7,7 @@ class Chatbot:
 
     def __init__(self):
         self.DIALOGFLOW_PROJECT_ID = 'ml-project-cwly'
-        self.DIALOGFLOW_LANGUAGE_CODE = 'en-US'
+        self.DIALOGFLOW_LANGUAGE_CODE = 'en'
         self.GOOGLE_APPLICATION_CREDENTIALS = 'credential.json'
         self.credential_path = 'credential.json'
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = self.credential_path
