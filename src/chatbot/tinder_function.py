@@ -2,6 +2,7 @@ import time
 import os
 from src.chatbot import tinder_api_sms
 from src import chatbot
+from src.model.model import clean_msg
 
 
 chatbot_1 = chatbot.Chatbot()
@@ -25,7 +26,7 @@ def process_messages(messages_all, my_id):
             match_ids.append(first["match_id"])
             for message in messages:
                 if message['from'] != my_id:
-                    individual_messages += str(message['message'])
+                    individual_messages = individual_messages + " " + str(message['message'])
             processed_messages[first["match_id"]] = individual_messages
     return processed_messages, match_ids
 
@@ -34,10 +35,12 @@ def check_duplicate(proc, match_id):
     for id in match_id:
         try:
             message = proc[id]
+            message = clean_msg(message)
+            message = " " + message
             ospath = os.getcwd()
             ospath = ospath.replace("\\", "/")
             ospath = ospath.split("/chatbot")[0]
-            filename = ospath + "/replies/" + id + ".txt"
+            filename = ospath + "/src/replies/" + id + ".txt"
             file = open(filename, "r")
             if message not in file:
                 file.close()
@@ -45,7 +48,7 @@ def check_duplicate(proc, match_id):
                 file.write(message)
                 file.close()
         except FileNotFoundError:
-            file = open(filename, "a+")
+            file = open(filename, "w+")
             file.write(message)
             file.close()
 
@@ -68,12 +71,12 @@ def get_message_every_1_sec(my_id):
             for match in matches_info:
                 messages_all.append(match.get('messages'))
             proc, match_ids = process_messages(messages_all, my_id)
+            check_duplicate(proc, match_ids)
             print(proc)
             response = chatbot_1.get_responses(proc)
             print(response)
             sent = send_message(response)
             print(sent)
-            check_duplicate(proc, match_ids)
             time.sleep(1)
         except:
             print("Error getting message...maybe token expired")
