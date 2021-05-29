@@ -27,9 +27,9 @@ class TinderSMSAuth(object):
         self.userid = None
         self.email = email
         self.phonenumber = None
-        if Path("smstoken.txt").exists():
+        if Path("src/cred/smstoken.txt").exists():
             print("smstoken.txt found, if you wish to auth again from scratch, delete smstoken.txt")
-            with open("smstoken.txt", "r") as fh:
+            with open("../cred/smstoken.txt", "r") as fh:
                 tokens = fh.read()
                 t = tokens.split(",")
                 self.authtoken = t[0]
@@ -119,7 +119,7 @@ class TinderSMSAuth(object):
         self.refreshtoken = response["loginResult"]["refreshToken"]
         self.authtoken = response["loginResult"]["authToken"]
         self.session.headers.update({"X-AUTH-TOKEN": self.authtoken})
-        with open("smstoken.txt", "w") as fh:
+        with open("../cred/smstoken.txt", "w") as fh:
             fh.write(self.authtoken + "," + self.refreshtoken)
             print("Auth token saved to smstoken.txt")
 

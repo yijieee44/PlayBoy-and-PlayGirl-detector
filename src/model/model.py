@@ -11,6 +11,17 @@ warnings.filterwarnings("ignore")
 # nltk.download()  # uncomment these two lines to download nltk data
 
 
+def clean_msg(msg):
+    msg = msg.lower()
+    # convert short form to word
+    msg = " ".join([t if t not in SHORT_FORM else SHORT_FORM[t].lower() for t in msg.split()])
+
+    tokenizer = RegexpTokenizer(r'[a-z]+')
+    tokens = tokenizer.tokenize(msg)
+
+    return " ".join(tokens)
+
+
 def preprocess(content):
     content = content.lower()
 
